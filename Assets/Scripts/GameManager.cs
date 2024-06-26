@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,13 +17,22 @@ public class GameManager : MonoBehaviour
 
     public TMP_Text GameOverScoreText;
 
-    public GameObject GameOverObject;
+    public GameObject GameOverTextObject;
+
+    public TMP_Text CountDownText;
+
+    public GameObject CountDownTextObject;
+
+    [HideInInspector]
+    public int enemyCount = 0;
 
     [HideInInspector]
     public int Score { private set; get; }
 
     [HideInInspector]
     public bool isGameActive = true;
+
+    protected float StartTimer = 3.0f;
 
     protected float TimerReset = 1f;
 
@@ -31,22 +42,51 @@ public class GameManager : MonoBehaviour
 
     protected float LossTimer = 1.0f;
 
+    protected bool[] occupiedSpawns;
+
     private float currTimer = 0.0f;
 
-    private bool playingGame = true;
+    private int lastEnemyLocation = -1;
+
+    private enum GameState
+    {
+        Starting,
+        Playing,
+        Ending
+    };
+
+    private GameState gameState;
 
     // Start is called before the first frame update
     void Start()
     {
+        GameOverTextObject.SetActive(false);
         Score = 0;
-        currTimer = TimerReset;
+        gameState = GameState.Starting;
+        Player.SetPlayingGame(false);
+        occupiedSpawns = new bool[possibleSpawns.Length];
+        currTimer = StartTimer;
         ScoreText.text = GetScoreText();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(currTimer <= 0.0f && playingGame)
+        if (gameState == GameState.Playing)
+        {
+            HandlePlayingState();
+        }
+        else if (gameState == GameState.Starting)
+        {
+            HandleStartingState();
+        }
+
+        currTimer -= Time.deltaTime;
+    }
+
+    private void HandlePlayingState()
+    {
+        if (currTimer <= 0.0f)
         {
             currTimer = TimerReset;
 
@@ -54,8 +94,21 @@ public class GameManager : MonoBehaviour
 
             SpawnEnemy();
         }
+    }
 
-        currTimer -= Time.deltaTime;
+    private void HandleStartingState()
+    {
+        if (currTimer <= 0.0f)
+        {
+            gameState = GameState.Playing;
+            Player.SetPlayingGame(true);
+            CountDownTextObject.gameObject.SetActive(false);
+        }
+        else
+        {
+            double dCurrTimer = Math.Ceiling(currTimer);
+            CountDownText.text = dCurrTimer.ToString();
+        }
     }
 
     /// <summary>
@@ -63,53 +116,68 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void SpawnEnemy()
     {
-        int direction = Random.Range(0, possibleSpawns.Length);
+        if(enemyCount == possibleSpawns.Length)
+        {
+            LoseGame();
+        }
+
+        int direction = GetRandomAvailableSpawnDirection();
+
+        occupiedSpawns[direction] = true;
+        enemyCount++;
+
         GameObject newEnemy = Instantiate(Enemy, possibleSpawns[direction].position, Quaternion.identity);
         newEnemy.transform.SetParent(this.transform);
         var enemyScript = newEnemy.GetComponent<Enemy>();
-        enemyScript.gameManager = this;
-        switch (direction)
-        {
-            case 0:
-                enemyScript.TorqueDirection = new Vector3(1, 0, 0);
-                enemyScript.FlyDirection = new Vector3(0, 1, 1);
-                break;
-            case 1:
-                enemyScript.TorqueDirection = new Vector3(0, 0, -1);
-                enemyScript.FlyDirection = new Vector3(1, 1, 0);
-                break;
-            case 2:
-                enemyScript.TorqueDirection = new Vector3(-1, 0, 0);
-                enemyScript.FlyDirection = new Vector3(0, 1, -1);
-                break;
-            case 3:
-                enemyScript.TorqueDirection = new Vector3(0, 0, 1);
-                enemyScript.FlyDirection = new Vector3(-1, 1, 0);
-                break;
-            default:
-                break;
-        }
+        enemyScript.StartUpEnemy(this, direction);
+
         StartCoroutine(enemyScript.SetLossTimer(LossTimer));
     }
 
-    public void IncreaseScore()
+    public void IncreaseScore(int direction)
     {
         Score++;
+        enemyCount--;
+        lastEnemyLocation = direction;
+        occupiedSpawns[direction] = false;
         ScoreText.text = GetScoreText();
     }
 
 
     public void LoseGame()
     {
-        if (playingGame)
+        if (gameState == GameState.Playing)
         {
-            Debug.Log("You Lost :(");
-            playingGame = false;
+            gameState = GameState.Ending;
             Player.SetPlayingGame(false);
             ScoreText.gameObject.SetActive(false);
-            GameOverObject.SetActive(true);
+            GameOverTextObject.SetActive(true);
             GameOverScoreText.text = GetScoreText();
         }
+    }
+
+
+    private string GetScoreText()
+    {
+        return "Score: " + Score;
+    }
+
+    private int GetRandomAvailableSpawnDirection()
+    {
+        int result = -1;
+        List<int> openSpawns = new List<int>();
+        for(int i = 0; i < occupiedSpawns.Length; i++)
+        {
+            if (!occupiedSpawns[i] && lastEnemyLocation != i)
+            {
+                openSpawns.Add(i);
+            }
+        }
+
+        result = UnityEngine.Random.Range(0, openSpawns.Count);
+
+        //Debug.Log("Random Result: " + result + " OpenSpawnsCount: " + openSpawns.Count);
+        return openSpawns[result];
     }
 
     public void RestartGame()
@@ -118,8 +186,8 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(currentSceneName);
     }
 
-    private string GetScoreText()
+    public void QuitGame()
     {
-        return "Score: " + Score;
+        Application.Quit();
     }
 }

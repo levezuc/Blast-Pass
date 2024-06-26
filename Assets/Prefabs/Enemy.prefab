@@ -263,9 +263,8 @@ MonoBehaviour:
   rigidBody: {fileID: 5963281235253608786}
   Sound_Activate: {fileID: 1491740373626527985}
   Sound_Deactivate: {fileID: 8256510078390742788}
-  FlyDirection: {x: 0, y: 1, z: 0}
-  TorqueDirection: {x: 0, y: 0, z: 0}
-  gameManager: {fileID: 0}
+  maxForce: 300
+  minForce: 200
 --- !u!54 &5963281235253608786
 Rigidbody:
   m_ObjectHideFlags: 0
