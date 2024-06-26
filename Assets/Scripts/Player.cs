@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 
     public Transform StartPosition;
 
-    public AudioSource Sound_Move;
+    public AudioSource SoundMove;
 
     public int speed = 1;
 
@@ -80,7 +80,7 @@ public class Player : MonoBehaviour
             {
                 if (isNewDirection)
                 {
-                    Sound_Move.PlayOneShot(Sound_Move.clip);
+                    SoundMove.PlayOneShot(SoundMove.clip);
                     currDirection = direction;
                 }
 

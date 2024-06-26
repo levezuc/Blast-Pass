@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        Sound_Activate.Play();
+        SoundActivate.Play();
     }
 
     public void StartUpEnemy(GameManager gameManager, int direction)
@@ -88,8 +88,8 @@ public class Enemy : MonoBehaviour
         rigidBody.useGravity = true;
         IsActiveEnemy = false;
         gameManager.IncreaseScore(Direction);
-        Sound_Deactivate.volume = 1 / Random.Range(1, 2);
-        Sound_Deactivate.Play();
+        SoundDeactivate.volume = 1 / Random.Range(1, 2);
+        SoundDeactivate.Play();
         StartCoroutine(WaitForDelete());
     }
 
