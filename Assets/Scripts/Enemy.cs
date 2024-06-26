@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
 
     private GameManager gameManager;
 
-    private int Direction;
+    private int direction;
 
     private bool IsActiveEnemy = true;
 
@@ -68,9 +68,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void SetDirection(int _direction)
+    public void SetDirection(int direction)
     {
-        Direction = _direction;
+        this.direction = direction;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -95,7 +95,9 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator WaitForDelete()
     {
-        yield return new WaitForSeconds(3f);
+        var destroyTimer = 2f;
+        if(destroyTimer < )
+        yield return new WaitForSeconds(2f);
         Destroy(this);
     }
 }
