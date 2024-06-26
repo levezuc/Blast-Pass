@@ -27,6 +27,8 @@ public class Enemy : MonoBehaviour
 
     private bool IsActiveEnemy = true;
 
+    private float lossTimer = float.MaxValue;
+
     void Start()
     {
         SoundActivate.Play();
@@ -61,6 +63,7 @@ public class Enemy : MonoBehaviour
 
     public IEnumerator SetLossTimer(float lossTimer)
     {
+        this.lossTimer = lossTimer;
         yield return new WaitForSeconds(lossTimer);
         if (IsActiveEnemy && gameManager != null)
         {
@@ -87,7 +90,7 @@ public class Enemy : MonoBehaviour
         rigidBody.AddTorque(TorqueDirection * Random.Range(minTorque, maxTorque));
         rigidBody.useGravity = true;
         IsActiveEnemy = false;
-        gameManager.IncreaseScore(Direction);
+        gameManager.IncreaseScore(direction);
         SoundDeactivate.volume = 1 / Random.Range(1, 2);
         SoundDeactivate.Play();
         StartCoroutine(WaitForDelete());
@@ -95,9 +98,12 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator WaitForDelete()
     {
-        var destroyTimer = 2f;
-        if(destroyTimer < )
-        yield return new WaitForSeconds(2f);
+        var destroyTimer = 3f;
+        if(destroyTimer < lossTimer)
+        {
+            Debug.LogWarning("destroy timer is less than loss timer");
+        }
+        yield return new WaitForSeconds(destroyTimer);
         Destroy(this);
     }
 }

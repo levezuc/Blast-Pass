@@ -261,10 +261,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 5963281235253608786}
-  Sound_Activate: {fileID: 1491740373626527985}
-  Sound_Deactivate: {fileID: 8256510078390742788}
-  maxForce: 300
-  minForce: 200
+  SoundActivate: {fileID: 1491740373626527985}
+  SoundDeactivate: {fileID: 8256510078390742788}
 --- !u!54 &5963281235253608786
 Rigidbody:
   m_ObjectHideFlags: 0
