@@ -263,6 +263,7 @@ MonoBehaviour:
   rigidBody: {fileID: 5963281235253608786}
   SoundActivate: {fileID: 1491740373626527985}
   SoundDeactivate: {fileID: 8256510078390742788}
+  EnemyRenderer: {fileID: 514318112033842652}
 --- !u!54 &5963281235253608786
 Rigidbody:
   m_ObjectHideFlags: 0

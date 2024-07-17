@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Positions: []
   StartPosition: {fileID: 0}
-  Sound_Move: {fileID: 160162497117003418}
+  SoundMove: {fileID: 160162497117003418}
   speed: 1
   GameManager: {fileID: 0}
 --- !u!1 &2103397387093741839

@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
 
     public AudioSource SoundDeactivate;
 
+    [SerializeField]
+    protected Renderer EnemyRenderer;
+
     private float minTorque = 100.0f;
 
     private float maxTorque = 200.0f;
@@ -29,9 +32,25 @@ public class Enemy : MonoBehaviour
 
     private float lossTimer = float.MaxValue;
 
+    private float duration = 1f;
+
+    private float t = 0;
+
+    private bool changingColor = true;
+
     void Start()
     {
         SoundActivate.Play();
+    }
+
+    void FixedUpdate()
+    {
+        EnemyRenderer.material.color = Color.Lerp(Color.white, Color.red, t);
+
+        if (t < 1 && changingColor)
+        {
+            t += Time.deltaTime / duration;
+        }
     }
 
     public void StartUpEnemy(GameManager gameManager, int direction)
@@ -64,6 +83,7 @@ public class Enemy : MonoBehaviour
     public IEnumerator SetLossTimer(float lossTimer)
     {
         this.lossTimer = lossTimer;
+
         yield return new WaitForSeconds(lossTimer);
         if (IsActiveEnemy && gameManager != null)
         {
@@ -90,6 +110,7 @@ public class Enemy : MonoBehaviour
         rigidBody.AddTorque(TorqueDirection * Random.Range(minTorque, maxTorque));
         rigidBody.useGravity = true;
         IsActiveEnemy = false;
+        changingColor = false;
         gameManager.IncreaseScore(direction);
         SoundDeactivate.volume = 1 / Random.Range(1, 2);
         SoundDeactivate.Play();
@@ -106,4 +127,5 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(destroyTimer);
         Destroy(this);
     }
+
 }
