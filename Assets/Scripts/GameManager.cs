@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (gameState == GameState.Playing)
         {
@@ -116,12 +116,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void SpawnEnemy()
     {
-        if(enemyCount == possibleSpawns.Length)
+        int direction = GetRandomAvailableSpawnDirection();
+
+        if(direction == -1)
         {
             LoseGame();
+            return;
         }
-
-        int direction = GetRandomAvailableSpawnDirection();
 
         occupiedSpawns[direction] = true;
         enemyCount++;
@@ -164,8 +165,8 @@ public class GameManager : MonoBehaviour
 
     private int GetRandomAvailableSpawnDirection()
     {
-        int result = -1;
         List<int> openSpawns = new List<int>();
+
         for(int i = 0; i < occupiedSpawns.Length; i++)
         {
             if (!occupiedSpawns[i] && lastEnemyLocation != i)
@@ -174,10 +175,12 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        result = UnityEngine.Random.Range(0, openSpawns.Count);
+        if(openSpawns.Count == 0)
+        {
+            return -1;
+        }
 
-        //Debug.Log("Random Result: " + result + " OpenSpawnsCount: " + openSpawns.Count);
-        return openSpawns[result];
+        return openSpawns[UnityEngine.Random.Range(0, openSpawns.Count)];
     }
 
     public void RestartGame()

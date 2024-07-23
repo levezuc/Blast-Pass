@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
 
     public AudioSource SoundMove;
 
-    public int speed = 1;
+    public double speed = 1;
 
     public GameManager GameManager;
 
@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (playingGame)
         {
@@ -94,16 +94,16 @@ public class Player : MonoBehaviour
         switch (direction)
         {
             case 0:
-                result.z = (transform.position.z + (0.1f * speed)) <= Positions[direction].transform.position.z ? result.z += (0.1f * speed) : 0;
+                result.z = (transform.position.z + (0.1f * speed)) <= Positions[direction].transform.position.z ? result.z += (float)(0.1 * speed) : 0;
                 break;
             case 1:
-                result.x = (transform.position.x + (0.1f * speed)) <= Positions[direction].transform.position.x ? result.x += (0.1f * speed) : 0;
+                result.x = (transform.position.x + (0.1f * speed)) <= Positions[direction].transform.position.x ? result.x += (float)(0.1 * speed) : 0;
                 break;
             case 2:
-                result.z = (transform.position.z - (0.1f * speed)) >= Positions[direction].transform.position.z ? result.z -= (0.1f * speed) : 0;
+                result.z = (transform.position.z - (0.1f * speed)) >= Positions[direction].transform.position.z ? result.z -= (float)(0.1 * speed) : 0;
                 break;
             case 3:
-                result.x = (transform.position.x - (0.1f * speed)) >= Positions[direction].transform.position.x ? result.x -= (0.1f * speed) : 0;
+                result.x = (transform.position.x - (0.1f * speed)) >= Positions[direction].transform.position.x ? result.x -= (float)(0.1 * speed) : 0;
                 break;
             default:
                 break;
