@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     protected float TimeDecay = 0.05f;
 
-    protected float ShortestPossibleTime = 0.5f;
+    protected float ShortestPossibleTime = 0.25f;
 
     protected float LossTimer = 1.0f;
 

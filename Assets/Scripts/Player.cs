@@ -46,7 +46,6 @@ public class Player : MonoBehaviour
 
     protected void HandleMovementInput()
     {
-        var result = Vector3.zero;
         if (Input.GetKey(KeyCode.A))
         {
             UpdatePostition(3);

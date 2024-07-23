@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     protected Renderer EnemyRenderer;
 
-    private float minTorque = 100.0f;
+    private float minTorque = 50.0f;
 
     private float maxTorque = 200.0f;
 
@@ -57,22 +57,23 @@ public class Enemy : MonoBehaviour
     {
         this.gameManager = gameManager;
         SetDirection(direction);
+        float spinVar = Random.Range(-0.3f, 0.3f);
         switch (direction)
         {
             case 0:
-                TorqueDirection = new Vector3(1, 0, 0);
+                TorqueDirection = new Vector3(1, spinVar, spinVar);
                 FlyDirection = new Vector3(0, 1, 1);
                 break;
             case 1:
-                TorqueDirection = new Vector3(0, 0, -1);
+                TorqueDirection = new Vector3(spinVar, spinVar, -1);
                 FlyDirection = new Vector3(1, 1, 0);
                 break;
             case 2:
-                TorqueDirection = new Vector3(-1, 0, 0);
+                TorqueDirection = new Vector3(-1, spinVar, spinVar);
                 FlyDirection = new Vector3(0, 1, -1);
                 break;
             case 3:
-                TorqueDirection = new Vector3(0, 0, 1);
+                TorqueDirection = new Vector3(spinVar, spinVar, 1);
                 FlyDirection = new Vector3(-1, 1, 0);
                 break;
             default:
@@ -112,7 +113,7 @@ public class Enemy : MonoBehaviour
         IsActiveEnemy = false;
         changingColor = false;
         gameManager.IncreaseScore(direction);
-        SoundDeactivate.volume = 1 / Random.Range(1, 2);
+        SoundDeactivate.volume = 1 / Random.Range(1, 3);
         SoundDeactivate.Play();
         StartCoroutine(WaitForDelete());
     }
